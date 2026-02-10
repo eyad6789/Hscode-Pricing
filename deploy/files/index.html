@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الرسوم الكمركية العراقية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a5f2a;
+            --primary-light: #2d8a42;
+            --primary-dark: #0f3d1a;
+            --accent: #c9a227;
+            --accent-light: #e6c54d;
+            --bg-dark: #0a1f10;
+            --bg-card: #122318;
+            --bg-input: #1a2f21;
+            --text-primary: #ffffff;
+            --text-secondary: #a8c4ad;
+            --border: #2d5a3a;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --error: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-primary);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(26, 95, 42, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(201, 162, 39, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+        }
+
+        .header-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .input-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-group label span {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            padding-right: 3rem;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(201, 162, 39, 0.2);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        .unit-price-display {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--success);
+            display: none;
+        }
+
+        .unit-price-display.show {
+            display: block;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26, 95, 42, 0.4);
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .product-card h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .product-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            border-right: 3px solid var(--accent);
+        }
+
+        .info-item .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-item .value {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .info-item .value.highlight {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .info-item .value.success {
+            color: var(--success);
+        }
+
+        .calculation-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--success);
+            margin-bottom: 2rem;
+        }
+
+        .calculation-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .calculation-header h3 {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .calculation-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .calculation-body {
+            padding: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+            border-right: 3px solid var(--primary);
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .step-formula {
+            color: var(--accent);
+            font-size: 1.05rem;
+            font-weight: 600;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .final-result {
+            background: linear-gradient(135deg, var(--success) 0%, #22c55e 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .final-result .label {
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .final-result .amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--bg-dark);
+            direction: ltr;
+        }
+
+        .final-result .amount-usd {
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 1.2rem;
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .pdf-matches {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .pdf-matches h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .match-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .match-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .match-item:hover {
+            background: rgba(52, 211, 153, 0.15);
+            border-color: var(--accent);
+            transform: translateX(-5px);
+        }
+
+        .match-item.selected {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid var(--success);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+        }
+
+        .match-item:first-child {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid var(--success);
+        }
+
+        .match-rank {
+            width: 30px;
+            height: 30px;
+            background: var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-left: 1rem;
+        }
+
+        .match-item:first-child .match-rank {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .match-details {
+            flex: 1;
+        }
+
+        .match-desc {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .match-section {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .match-rate {
+            text-align: left;
+        }
+
+        .match-rate .rate {
+            color: var(--success);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .error-message {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--error);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message h4 {
+            color: var(--error);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message p {
+            color: var(--text-secondary);
+        }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .warning-box.show {
+            display: block;
+        }
+
+        .warning-box p {
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .unit-toggle {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .unit-toggle-btn {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .unit-toggle-btn:hover {
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .unit-toggle-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .final-result .amount {
+                font-size: 2rem;
+            }
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-results.show {
+            display: block;
+        }
+
+        .autocomplete-header {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .autocomplete-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .autocomplete-item:hover {
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .autocomplete-item .hs-code {
+            color: var(--accent);
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .autocomplete-item .desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .autocomplete-item .price {
+            color: var(--success);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .autocomplete-item .no-price {
+            color: var(--warning);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .price-badge {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .price-badge.has-price {
+            background: var(--success);
+        }
+
+        .price-badge.no-price {
+            background: var(--warning);
+        }
+
+        .manual-value-section {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.2rem;
+            background: rgba(251, 191, 36, 0.08);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .manual-value-section.show {
+            display: block;
+        }
+
+        .manual-value-section label {
+            display: block;
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .manual-value-section .hint {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5581313795010837"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Google AdSense Placeholder -->
+        <div class="adsense-placeholder"
+            style="margin: 1rem 0; padding: 1rem; background: #f0f0f0; border: 1px dashed #ccc; text-align: center; color: #666;">
+            Google AdSense Area
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5581313795010837"
+                data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        <header class="header">
+            <div class="header-icon">🏛️</div>
+            <h1>حاسبة الرسوم الكمركية العراقية</h1>
+            <p>احسب الرسوم الكمركية بناءً على التعرفة الجديدة 2026 وقرار مجلس الوزراء 957</p>
+        </header>
+
+        <section class="input-section">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>رمز HS Code <span>(الرمز الجمركي)</span></label>
+                    <div class="input-wrapper autocomplete-container">
+                        <input type="text" id="hsCode" placeholder="ابحث بالرمز أو الوصف: مثال 87089900 أو حليب"
+                            maxlength="50" autocomplete="off">
+                        <span class="input-icon">🔢</span>
+                        <div class="autocomplete-results" id="autocompleteResults"></div>
+                    </div>
+                    <div class="unit-price-display" id="unitPriceDisplay"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>نوع القياس <span>(اختر بالوزن أو بالقطع)</span></label>
+                    <div class="unit-toggle">
+                        <button type="button" class="unit-toggle-btn active" data-unit="weight"
+                            onclick="toggleUnit('weight')">
+                            ⚖️ بالوزن
+                        </button>
+                        <button type="button" class="unit-toggle-btn" data-unit="quantity"
+                            onclick="toggleUnit('quantity')">
+                            📦 بالقطع
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label id="weightLabel">الوزن <span>(كيلوغرام)</span></label>
+                    <div class="input-wrapper">
+                        <input type="number" id="weight" placeholder="مثال: 20391.82" min="0" step="0.01">
+                        <span class="input-icon" id="weightIcon">⚖️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box" id="warningBox">
+                <p>⚠️ لا يوجد سعر وحدة (AVR_MNT) لهذا الرمز في قاعدة البيانات. يرجى إدخال القيمة الإجمالية يدوياً.</p>
+            </div>
+
+            <div class="manual-value-section" id="manualValueSection">
+                <label>💵 أدخل القيمة الإجمالية بالدولار (USD)</label>
+                <div class="hint">هذا الرمز لا يحتوي على سعر تقديري. أدخل القيمة الإجمالية للبضاعة بالدولار لحساب
+                    الرسوم.</div>
+                <div class="input-wrapper">
+                    <input type="number" id="manualValue" placeholder="مثال: 50000" min="0" step="0.01">
+                    <span class="input-icon">💰</span>
+                </div>
+            </div>
+
+            <button class="calculate-btn" id="calculateBtn" onclick="calculate()">
+                <span class="btn-text">احسب الرسوم الكمركية</span>
+                <span class="btn-icon">📊</span>
+            </button>
+        </section>
+
+        <section class="results-section" id="resultsSection">
+            <div class="product-card" id="productCard">
+                <h3>📦 معلومات البضاعة</h3>
+                <div class="product-info-grid" id="productInfo"></div>
+            </div>
+
+            <div class="calculation-card">
+                <div class="calculation-header">
+                    <h3>📊 حساب الرسوم الكمركية</h3>
+                    <div class="subtitle">خطوات الحساب التفصيلية</div>
+                </div>
+                <div class="calculation-body" id="calculationSteps"></div>
+            </div>
+
+            <label class="toggle-control" id="pdfToggleControl" style="display: none;">
+                <input type="checkbox" class="toggle-checkbox" id="showPdfMatches" checked
+                    onchange="togglePdfMatches()">
+                <span class="toggle-label">📋 عرض التطابقات من قرار مجلس الوزراء 957</span>
+            </label>
+
+            <div class="pdf-matches" id="pdfMatches">
+                <h3>📋 التطابقات من قرار مجلس الوزراء 957</h3>
+                <div class="match-list" id="matchList"></div>
+            </div>
+        </section>
+
+        <div class="error-message" id="errorSection">
+            <div class="icon">⚠️</div>
+            <h4>لم يتم العثور على النتائج</h4>
+            <p id="errorText"></p>
+        </div>
+
+        <footer class="footer">
+            <p>حاسبة الرسوم الكمركية العراقية © 2026</p>
+            <p>مبني على التعرفة الجمركية الجديدة وقرار مجلس الوزراء رقم 957</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentUnit = 'weight'; // Default to weight
+
+        function toggleUnit(unit) {
+            currentUnit = unit;
+            const weightBtn = document.querySelector('[data-unit="weight"]');
+            const quantityBtn = document.querySelector('[data-unit="quantity"]');
+            const weightLabel = document.getElementById('weightLabel');
+            const weightInput = document.getElementById('weight');
+            const weightIcon = document.getElementById('weightIcon');
+
+            if (unit === 'weight') {
+                weightBtn.classList.add('active');
+                quantityBtn.classList.remove('active');
+                weightLabel.innerHTML = 'الوزن <span>(كيلوغرام)</span>';
+                weightInput.placeholder = 'مثال: 20391.82';
+                weightIcon.textContent = '⚖️';
+            } else {
+                weightBtn.classList.remove('active');
+                quantityBtn.classList.add('active');
+                weightLabel.innerHTML = 'الكمية <span>(عدد القطع)</span>';
+                weightInput.placeholder = 'مثال: 100';
+                weightIcon.textContent = '📦';
+            }
+        }
+
+        function togglePdfMatches() {
+            const checkbox = document.getElementById('showPdfMatches');
+            const pdfMatches = document.getElementById('pdfMatches');
+
+            if (checkbox.checked) {
+                pdfMatches.style.display = 'block';
+            } else {
+                pdfMatches.style.display = 'none';
+            }
+        }
+
+        function selectTariffRate(selectedRate, clickedElement) {
+            // Remove selected class from all match items
+            document.querySelectorAll('.match-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // Add selected class to clicked item
+            clickedElement.classList.add('selected');
+
+            // Recalculate with the new tariff rate
+            recalculateWithRate(selectedRate);
+        }
+
+        function recalculateWithRate(customRate) {
+            const hsInput = document.getElementById('hsCode');
+            const hsCode = hsInput.value.trim();
+            const weight = parseFloat(document.getElementById('weight').value);
+
+            const excelData = findHSCode(hsCode);
+            if (!excelData) return;
+
+            const unitPrice = excelData.avr_mnt;
+            const isManualMode = !unitPrice;
+            const manualValue = parseFloat(document.getElementById('manualValue').value) || 0;
+            const unitType = excelData.avr_unt || 'KGM';
+            const unitName = excelData.avr_unt_nam || 'كيلو غرام';
+            const USD_TO_IQD = 1320;
+
+            const totalTariff = customRate;
+            const tariffRate = customRate - 3;
+            const additionalRate = 3;
+
+            let totalValueUsd;
+            if (isManualMode) {
+                totalValueUsd = manualValue;
+            } else {
+                if (!weight || weight <= 0) return;
+                totalValueUsd = unitPrice * weight;
+            }
+
+            const totalValueIqd = totalValueUsd * USD_TO_IQD;
+            const dutyBeforeDiscount = totalValueIqd * (totalTariff / 100);
+            const finalDuty = dutyBeforeDiscount * 0.75;
+            const finalDutyUsd = finalDuty / USD_TO_IQD;
+
+            const step1Html = isManualMode
+                ? `<div class="step-title">القيمة الإجمالية بالدولار (إدخال يدوي)</div>
+                   <div class="step-formula">$${formatNumber(totalValueUsd)} USD</div>`
+                : `<div class="step-title">القيمة الإجمالية بالدولار</div>
+                   <div class="step-formula">$${unitPrice.toFixed(2)} × ${weight} ${unitName} = $${formatNumber(totalValueUsd)} USD</div>`;
+
+            document.getElementById('calculationSteps').innerHTML = `
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">${step1Html}</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">التحويل إلى الدينار العراقي (سعر الصرف: ${USD_TO_IQD})</div>
+                    <div class="step-formula">$${formatNumber(totalValueUsd)} × ${USD_TO_IQD} = ${formatNumber(totalValueIqd)} IQD</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">التعريفة الكمركية (${tariffRate.toFixed(1)}% + ${additionalRate}% = ${totalTariff}%) - <span style="color: var(--warning);">✏️ تم التعديل يدوياً</span></div>
+                    <div class="step-formula">${formatNumber(totalValueIqd)} × ${totalTariff}% = ${formatNumber(dutyBeforeDiscount)} IQD</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">تطبيق نسبة 75%</div>
+                    <div class="step-formula">${formatNumber(dutyBeforeDiscount)} × 75% = ${formatNumber(finalDuty)} IQD</div>
+                </div>
+            </div>
+            <div class="final-result">
+                <div class="label">💰 الرسم الكمركي النهائي</div>
+                <div class="amount">${formatNumberInt(finalDuty)} IQD</div>
+                <div class="amount-usd">≈ $${formatNumber(finalDutyUsd)} USD</div>
+            </div>
+        `;
+        }
+
+        const PDF_TARIFF_DATA = {
+            1: {
+                name: "القسم الأول - الحيوانات الحية ومنتجات المملكة الحيوانية", hs_range: [1, 5], items: [
+                    { description: "حيوانات حية", rate: 10 },
+                    { description: "لحوم واحشاء وأطراف صالحة للأكل", rate: 5 },
+                    { description: "لحوم دواجن مقطعة وغير مقطعة", rate: 30 },
+                    { description: "مصنعات اللحوم واللحم المفروم", rate: 30 },
+                    { description: "اسماك وقشريات ورخويات", rate: 5 },
+                    { description: "البان ومنتجات صناعة الالبان", rate: 5 },
+                    { description: "بيض المائدة", rate: 30 },
+                    { description: "منتجات أخرى من أصل حيواني", rate: 10 }
+                ]
+            },
+            2: {
+                name: "القسم الثاني - منتجات المملكة النباتية", hs_range: [6, 14], items: [
+                    { description: "خضر وجذور صالحة للاكل", rate: 5 },
+                    { description: "فواكه وثمار صالحة للاكل", rate: 5 },
+                    { description: "بن وشاي وبهارات وتوابل", rate: 10 },
+                    { description: "حبوب", rate: 5 },
+                    { description: "طحين بكافة انواعه", rate: 30 }
+                ]
+            },
+            3: {
+                name: "القسم الثالث - شحوم ودهون وزيوت", hs_range: [15, 15], items: [
+                    { description: "شحوم ودهون وزيوت حيوانية او نباتية", rate: 5 }
+                ]
+            },
+            4: {
+                name: "القسم الرابع - منتجات صناعة الأغذية", hs_range: [16, 24], items: [
+                    { description: "محضرات لحوم واسماك", rate: 30 },
+                    { description: "سكر او مصنعات سكرية", rate: 5 },
+                    { description: "كاكاو ومحضراته", rate: 10 },
+                    { description: "مشروبات وسوائل كحولية", rate: 30 },
+                    { description: "تبغ وابدال تبغ", rate: 30 }
+                ]
+            },
+            5: {
+                name: "القسم الخامس - منتجات معدنية", hs_range: [25, 27], items: [
+                    { description: "ملح واتربة واحجار واسمنت", rate: 15 },
+                    { description: "خامات معادن", rate: 15 },
+                    { description: "زيوت معدنية ووقود", rate: 15 }
+                ]
+            },
+            6: {
+                name: "القسم السادس - منتجات الصناعات الكيماوية", hs_range: [28, 38], items: [
+                    { description: "منتجات كيمياوية", rate: 10 },
+                    { description: "منتجات الصيدلة", rate: 5 },
+                    { description: "اسمدة", rate: 5 },
+                    { description: "دهانات ورنيش", rate: 10 },
+                    { description: "عطور ومحضرات تجميل", rate: 10 },
+                    { description: "صابون ومحضرات غسيل", rate: 10 }
+                ]
+            },
+            7: {
+                name: "القسم السابع - لدائن ومطاط", hs_range: [39, 40], items: [
+                    { description: "لدائن ومصنوعاتها", rate: 10 },
+                    { description: "مطاط ومصنوعاته", rate: 10 }
+                ]
+            },
+            8: {
+                name: "القسم الثامن - جلود ومصنوعاتها", hs_range: [41, 43], items: [
+                    { description: "جلود خام ومدبوغة", rate: 15 },
+                    { description: "مصنوعات من جلد وحقائب", rate: 15 }
+                ]
+            },
+            9: {
+                name: "القسم التاسع - خشب ومصنوعاته", hs_range: [44, 46], items: [
+                    { description: "خشب ومصنوعاته", rate: 15 }
+                ]
+            },
+            10: {
+                name: "القسم العاشر - ورق ومصنوعاته", hs_range: [47, 49], items: [
+                    { description: "ورق وورق مقوى", rate: 5 },
+                    { description: "كتب وصحف ومطبوعات", rate: 5 }
+                ]
+            },
+            11: {
+                name: "القسم الحادي عشر - مواد نسيجية", hs_range: [50, 63], items: [
+                    { description: "قطن والياف نسيجية", rate: 15 },
+                    { description: "سجاد واغطية ارضيات", rate: 15 },
+                    { description: "البسة وتوابع", rate: 15 }
+                ]
+            },
+            12: {
+                name: "القسم الثاني عشر - احذية واغطية راس", hs_range: [64, 67], items: [
+                    { description: "احذية واجزائها", rate: 15 },
+                    { description: "اغطية الراس", rate: 15 }
+                ]
+            },
+            13: {
+                name: "القسم الثالث عشر - حجر وجص وخزف وزجاج", hs_range: [68, 70], items: [
+                    { description: "مصنوعات من حجر وجص", rate: 15 },
+                    { description: "زجاج ومصنوعاته", rate: 15 }
+                ]
+            },
+            14: {
+                name: "القسم الرابع عشر - معادن ثمينة", hs_range: [71, 71], items: [
+                    { description: "لؤلؤ واحجار كريمة ومجوهرات", rate: 5 }
+                ]
+            },
+            15: {
+                name: "القسم الخامس عشر - معادن عادية", hs_range: [72, 83], items: [
+                    { description: "حديد وصلب فولاذ", rate: 10 },
+                    { description: "مصنوعات من حديد وصلب", rate: 10 },
+                    { description: "نحاس ومصنوعاته", rate: 10 },
+                    { description: "المنيوم ومصنوعاته", rate: 10 }
+                ]
+            },
+            16: {
+                name: "القسم السادس عشر - آلات وأجهزة كهربائية", hs_range: [84, 85], items: [
+                    { description: "مفاعلات نووية ومراجل وآلات", rate: 30 },
+                    { description: "المركبات الانشائية", rate: 5 },
+                    { description: "آلات وأجهزة كهربائية وتلفزيون", rate: 30 },
+                    { description: "مستلزمات الطاقة الشمسية", rate: 5 }
+                ]
+            },
+            17: {
+                name: "القسم السابع عشر - معدات النقل", hs_range: [86, 89], items: [
+                    { description: "قاطرات ومعدات السكك الحديدية", rate: 15 },
+                    { description: "سيارات وجرارات ودراجات ومركبات واجزائها ولوازمها", rate: 15 },
+                    { description: "المركبات الزراعية والانتاجية والانشائية", rate: 5 },
+                    { description: "مركبات جوية وفضائية", rate: 15 },
+                    { description: "سفن وقوارب", rate: 15 }
+                ]
+            },
+            18: {
+                name: "القسم الثامن عشر - أدوات علمية وطبية", hs_range: [90, 92], items: [
+                    { description: "أدوات للبصريات والتصوير والطب", rate: 5 },
+                    { description: "ساعات واجزاؤها", rate: 15 },
+                    { description: "أدوات موسيقية", rate: 15 }
+                ]
+            },
+            19: {
+                name: "القسم التاسع عشر - أسلحة وذخائر", hs_range: [93, 93], items: [
+                    { description: "أسلحة وذخائر", rate: 30 }
+                ]
+            },
+            20: {
+                name: "القسم العشرون - سلع متنوعة", hs_range: [94, 96], items: [
+                    { description: "اثاث وأجهزة انارة", rate: 15 },
+                    { description: "لعب أطفال والعاب رياضية", rate: 15 },
+                    { description: "مصنوعات متنوعة", rate: 5 }
+                ]
+            },
+            21: {
+                name: "القسم الحادي والعشرون - تحف فنية", hs_range: [97, 97], items: [
+                    { description: "تحف فنية وقطع اثرية", rate: 30 }
+                ]
+            }
+        };
+
+    </script>
+    <script src="hs_data.js"></script>
+    <script>
+
+        console.log('Loaded', Object.keys(HS_DATA).length, 'HS codes with AVR_MNT');
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+        }
+
+        function formatNumberInt(num) {
+            return new Intl.NumberFormat('en-US').format(Math.round(num));
+        }
+
+        function getSectionFromChapter(hsCode) {
+            const chapter = parseInt(hsCode.substring(0, 2));
+            for (const [sectionNum, sectionData] of Object.entries(PDF_TARIFF_DATA)) {
+                const [start, end] = sectionData.hs_range;
+                if (chapter >= start && chapter <= end) {
+                    return { num: sectionNum, data: sectionData };
+                }
+            }
+            return null;
+        }
+
+        function findHSCode(hsCode) {
+            hsCode = hsCode.trim();
+            if (HS_DATA[hsCode]) return HS_DATA[hsCode];
+
+            for (let len = hsCode.length; len >= 4; len--) {
+                const partial = hsCode.substring(0, len);
+                for (const key of Object.keys(HS_DATA)) {
+                    if (key.startsWith(partial)) return HS_DATA[key];
+                }
+            }
+
+            return null;
+        }
+
+        // Update unit price display and manual value section when HS code changes
+        function updatePriceDisplay() {
+            const hsCode = document.getElementById('hsCode').value.trim();
+            const unitPriceDisplay = document.getElementById('unitPriceDisplay');
+            const warningBox = document.getElementById('warningBox');
+            const manualSection = document.getElementById('manualValueSection');
+
+            // Only check when input looks like an HS code (starts with digit and >= 6 chars)
+            const isHsCode = /^\d/.test(hsCode) && hsCode.length >= 6;
+            if (isHsCode) {
+                const data = findHSCode(hsCode);
+                if (data && data.avr_mnt) {
+                    unitPriceDisplay.innerHTML = `💰 سعر الوحدة (AVR_MNT): <strong>$${formatNumber(data.avr_mnt)}</strong> / ${data.avr_unt_nam || data.avr_unt}`;
+                    unitPriceDisplay.classList.add('show');
+                    warningBox.classList.remove('show');
+                    manualSection.classList.remove('show');
+                } else if (data) {
+                    unitPriceDisplay.classList.remove('show');
+                    warningBox.classList.add('show');
+                    manualSection.classList.add('show');
+                } else {
+                    unitPriceDisplay.classList.remove('show');
+                    warningBox.classList.remove('show');
+                    manualSection.classList.remove('show');
+                }
+            } else {
+                unitPriceDisplay.classList.remove('show');
+                warningBox.classList.remove('show');
+                manualSection.classList.remove('show');
+            }
+        }
+        document.getElementById('hsCode').addEventListener('input', updatePriceDisplay);
+
+        function calculate() {
+            const hsCode = document.getElementById('hsCode').value.trim();
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const manualValue = parseFloat(document.getElementById('manualValue').value) || 0;
+
+            if (!hsCode) {
+                alert('الرجاء إدخال رمز HS Code');
+                return;
+            }
+
+            // Check if this HS code has avr_mnt
+            const excelData = findHSCode(hsCode);
+            const hasPrice = excelData && excelData.avr_mnt;
+
+            if (hasPrice && weight <= 0) {
+                alert('الرجاء إدخال الوزن / الكمية');
+                return;
+            }
+
+            if (!hasPrice && manualValue <= 0) {
+                alert('الرجاء إدخال القيمة الإجمالية بالدولار');
+                return;
+            }
+
+            const btn = document.getElementById('calculateBtn');
+            btn.classList.add('loading');
+            btn.innerHTML = '<div class="spinner"></div><span>جاري الحساب...</span>';
+
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.innerHTML = '<span class="btn-text">احسب الرسوم الكمركية</span><span class="btn-icon">📊</span>';
+
+                performCalculation(hsCode, weight, manualValue);
+            }, 500);
+        }
+
+        function performCalculation(hsCode, weight, manualValue) {
+            const excelData = findHSCode(hsCode);
+
+            if (!excelData) {
+                document.getElementById('resultsSection').classList.remove('show');
+                document.getElementById('errorSection').classList.add('show');
+                document.getElementById('errorText').textContent = `لم يتم العثور على رمز HS: ${hsCode}`;
+                return;
+            }
+
+            const isManualMode = !excelData.avr_mnt;
+
+            // Warnings Checks
+            // Fuzzy Match Warning
+            let matchWarning = '';
+            if (excelData.hs_code !== hsCode) {
+                matchWarning = `
+                    <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid var(--warning); border-radius: 8px; padding: 0.8rem; margin-bottom: 1rem;">
+                        <div style="color: var(--warning); font-weight: bold; margin-bottom: 0.5rem;">⚠️ تنبيه: رمز غير مطابق تماماً</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                            لم يتم العثور على الرمز <strong>${hsCode}</strong>. 
+                            تم استخدام أقرب رمز مطابق: <strong>${excelData.hs_code}</strong>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Unit Mismatch Warning
+            const unitType = excelData.avr_unt || 'KGM';
+            const unitName = excelData.avr_unt_nam || (unitType === 'KGM' ? 'كيلو غرام' : unitType);
+            const isPieceUnit = ['NMB', 'DPC', 'SET', 'PRS', 'CTB', 'BOX', 'PK', 'GSC'].includes(unitType);
+            const isWeightUnit = ['KGM', 'TNE', 'GRM', 'KG', 'TON'].includes(unitType);
+
+            let unitWarning = '';
+            if (isPieceUnit && currentUnit === 'weight') {
+                unitWarning = `
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); border-radius: 8px; padding: 0.8rem; margin-bottom: 1rem;">
+                        <div style="color: var(--error); font-weight: bold; margin-bottom: 0.5rem;">⚠️ تنبيه: اختلاف وحدة القياس</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                            هذا المنتج مسعر في النظام <strong>بالعدد/القطعة (${unitName})</strong>، لكنك اخترت الحساب <strong>بالوزن</strong>.
+                            <br>قد تظهر النتائج غير دقيقة (أرقام عالية جداً). يفضل تغيير نوع القياس إلى "بالقطع".
+                        </div>
+                    </div>
+                `;
+            } else if (isWeightUnit && currentUnit === 'quantity') {
+                unitWarning = `
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); border-radius: 8px; padding: 0.8rem; margin-bottom: 1rem;">
+                        <div style="color: var(--error); font-weight: bold; margin-bottom: 0.5rem;">⚠️ تنبيه: اختلاف وحدة القياس</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                            هذا المنتج مسعر في النظام <strong>بالوزن (${unitName})</strong>، لكنك اخترت الحساب <strong>بالعدد</strong>.
+                            <br>قد تظهر النتائج غير دقيقة. يفضل تغيير نوع القياس إلى "بالوزن".
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('errorSection').classList.remove('show');
+            document.getElementById('resultsSection').classList.add('show');
+
+            const tariffRate = excelData.tariff_rate || 0;
+            const additionalRate = excelData.additional_rate || 3;
+            const totalTariff = tariffRate + additionalRate;
+            const unitPrice = excelData.avr_mnt;
+
+            // Constants
+            const USD_TO_IQD = 1320;
+
+            // Calculate total value
+            let totalValueUsd;
+            if (isManualMode) {
+                totalValueUsd = manualValue || 0;
+            } else {
+                totalValueUsd = unitPrice * weight;
+            }
+
+            // Step 2: Convert to IQD
+            const totalValueIqd = totalValueUsd * USD_TO_IQD;
+
+            // Step 3: Calculate duty (tariff rate on value)
+            const dutyBeforeDiscount = totalValueIqd * (totalTariff / 100);
+
+            // Step 4: Apply 75%
+            const finalDuty = dutyBeforeDiscount * 0.75;
+            const finalDutyUsd = finalDuty / USD_TO_IQD;
+
+            // Get PDF section
+            const section = getSectionFromChapter(hsCode);
+
+            // Build product info HTML
+            let priceInfoHtml = '';
+            if (isManualMode) {
+                priceInfoHtml = `
+                <div class="info-item">
+                    <div class="label">سعر الوحدة التقديري</div>
+                    <div class="value" style="color: var(--warning);">⚠️ غير متوفر (إدخال يدوي)</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">القيمة الإجمالية (USD) - يدوي</div>
+                    <div class="value highlight">$${formatNumber(totalValueUsd)}</div>
+                </div>`;
+            } else {
+                priceInfoHtml = `
+                <div class="info-item">
+                    <div class="label">سعر الوحدة التقديري</div>
+                    <div class="value success">$${formatNumber(unitPrice)} / ${unitName}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">الكمية / الوزن</div>
+                    <div class="value">${formatNumber(weight)} ${unitName}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">القيمة الإجمالية (USD)</div>
+                    <div class="value highlight">$${formatNumber(totalValueUsd)}</div>
+                </div>`;
+            }
+
+            // Display product info
+            document.getElementById('productInfo').innerHTML = `
+            ${matchWarning}
+            ${unitWarning}
+            <div class="info-item">
+                <div class="label">رمز HS</div>
+                <div class="value">${excelData.hs_code}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">وصف البضاعة</div>
+                <div class="value">${excelData.description}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">نسبة الرسم</div>
+                <div class="value">${tariffRate}% + ${additionalRate}% (إضافي)</div>
+            </div>
+            ${priceInfoHtml}
+            <div class="info-item">
+                <div class="label">نسبة التعريفة</div>
+                <div class="value">${tariffRate}% + ${additionalRate}% = ${totalTariff}%</div>
+            </div>
+        `;
+
+            // Build step 1 based on mode
+            const step1Html = isManualMode
+                ? `<div class="step-title">القيمة الإجمالية بالدولار (إدخال يدوي)</div>
+                   <div class="step-formula">$${formatNumber(totalValueUsd)} USD</div>`
+                : `<div class="step-title">حساب القيمة الإجمالية (سعر الوحدة × الكمية)</div>
+                   <div class="step-formula">$${formatNumber(unitPrice)} × ${formatNumber(weight)} = $${formatNumber(totalValueUsd)}</div>`;
+
+            // Display calculation steps
+            document.getElementById('calculationSteps').innerHTML = `
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">${step1Html}</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">تحويل إلى الدينار العراقي (× ${USD_TO_IQD})</div>
+                    <div class="step-formula">$${formatNumber(totalValueUsd)} × ${USD_TO_IQD} = ${formatNumber(totalValueIqd)} IQD</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">التعريفة الكمركية (${tariffRate}% + ${additionalRate}% = ${totalTariff}%)</div>
+                    <div class="step-formula">${formatNumber(totalValueIqd)} × ${totalTariff}% = ${formatNumber(dutyBeforeDiscount)} IQD</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">تطبيق نسبة 75%</div>
+                    <div class="step-formula">${formatNumber(dutyBeforeDiscount)} × 75% = ${formatNumber(finalDuty)} IQD</div>
+                </div>
+            </div>
+            <div class="final-result">
+                <div class="label">💰 الرسم الكمركي النهائي</div>
+                <div class="amount">${formatNumberInt(finalDuty)} IQD</div>
+                <div class="amount-usd">≈ $${formatNumber(finalDutyUsd)} USD</div>
+            </div>
+        `;
+
+            // Display PDF matches
+            if (section) {
+                document.getElementById('matchList').innerHTML = section.data.items.map((item, index) => `
+                <div class="match-item ${index === 0 ? 'selected' : ''}" onclick="selectTariffRate(${item.rate}, this)" data-rate="${item.rate}">
+                    <div class="match-rank">${index + 1}</div>
+                    <div class="match-details">
+                        <div class="match-desc">${item.description}</div>
+                        <div class="match-section">${section.data.name}</div>
+                    </div>
+                    <div class="match-rate">
+                        <div class="rate">${item.rate}%</div>
+                    </div>
+                </div>
+            `).join('');
+                // Show the toggle control when there are matches
+                document.getElementById('pdfToggleControl').style.display = 'flex';
+            } else {
+                // Hide the toggle control when there are no matches
+                document.getElementById('pdfToggleControl').style.display = 'none';
+            }
+
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Autocomplete with description search
+        const hsInput = document.getElementById('hsCode');
+        const autocompleteResults = document.getElementById('autocompleteResults');
+
+        hsInput.addEventListener('input', function () {
+            const value = this.value.trim();
+            if (value.length < 2) {
+                autocompleteResults.classList.remove('show');
+                return;
+            }
+
+            // Update price display
+            updatePriceDisplay();
+
+            let matches = [];
+            const isNumeric = /^\d/.test(value);
+
+            if (isNumeric) {
+                // Search by HS code prefix
+                matches = Object.entries(HS_DATA)
+                    .filter(([code]) => code.startsWith(value))
+                    .slice(0, 15);
+            } else {
+                // Search by Arabic description
+                const searchLower = value.toLowerCase();
+                matches = Object.entries(HS_DATA)
+                    .filter(([code, data]) => data.description && data.description.includes(searchLower))
+                    .slice(0, 15);
+            }
+
+            if (matches.length === 0) {
+                autocompleteResults.innerHTML = `<div class="autocomplete-header">لا توجد نتائج لـ "${value}"</div>`;
+                autocompleteResults.classList.add('show');
+                return;
+            }
+
+            const headerText = isNumeric
+                ? `🔢 ${matches.length} نتيجة للرمز "${value}"`
+                : `🔍 ${matches.length} نتيجة للوصف "${value}"`;
+
+            autocompleteResults.innerHTML = `<div class="autocomplete-header">${headerText}</div>` +
+                matches.map(([code, data]) => {
+                    const hasPriceClass = data.avr_mnt ? 'has-price' : 'no-price';
+                    const priceHtml = data.avr_mnt
+                        ? `<div class="price">🟢 💰 $${data.avr_mnt.toFixed(2)} / ${data.avr_unt_nam || data.avr_unt || 'KGM'}</div>`
+                        : `<div class="no-price">🟡 لا يوجد سعر تقديري — يمكن إدخال القيمة يدوياً</div>`;
+                    return `
+                    <div class="autocomplete-item" data-code="${code}">
+                        <span class="hs-code">${code}</span>
+                        <span class="price-badge ${hasPriceClass}"></span>
+                        <span class="desc">${data.description || ''}</span>
+                        ${priceHtml}
+                    </div>`;
+                }).join('');
+            autocompleteResults.classList.add('show');
+        });
+
+        autocompleteResults.addEventListener('click', function (e) {
+            const item = e.target.closest('.autocomplete-item');
+            if (item) {
+                hsInput.value = item.dataset.code;
+                autocompleteResults.classList.remove('show');
+                updatePriceDisplay();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.autocomplete-container')) {
+                autocompleteResults.classList.remove('show');
+            }
+        });
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    autocompleteResults.classList.remove('show');
+                    calculate();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
